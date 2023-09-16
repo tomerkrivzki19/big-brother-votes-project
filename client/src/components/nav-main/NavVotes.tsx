@@ -34,5 +34,5 @@ function NavVotes() {
     </div>
   );
 }
-
+//
 export default NavVotes;

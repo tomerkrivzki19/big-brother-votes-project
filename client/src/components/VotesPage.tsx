@@ -1,18 +1,22 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo, memo } from "react";
 import NavVotes from "./nav-main/NavVotes";
 import modalStyle from "./modal/modalStyle";
 import Modal from "react-modal";
+import AxiosClient from "../axios/CreateAxios";
 
 function VotesPage() {
   const [numberOfVotes, setNumberOfVotes] = useState(10);
   const [countPlus, setCountPlus] = useState(0);
 
+  const [Loggedin, setLoggedin] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const handleClick = useCallback(() => {
-    setShowModal(!showModal);
-  }, [showModal]);
-  const style: any = modalStyle;
+  console.log(Loggedin);
 
+  // const handleClick = useCallback(() => {
+  //   setShowModal(!showModal);
+  // }, [showModal]);
+
+  const style: any = modalStyle;
   const [disabled, setDisabled] = useState(false);
 
   //   contenders
@@ -38,9 +42,68 @@ function VotesPage() {
     }
   }, [numberOfVotes]);
 
-  useEffect(() => {
-    setShowModal(true);
-  }, []);
+  //   if (Loggedin == false) {
+  //     setShowModal(true);
+  //   }
+  // }
+  // useEffect(() => {
+  //   if (Loggedin === false) {
+  //     alert("חייב להירשם על מנת לבחור");
+  //     handleClick();
+  //     return;
+  //   } else {
+  //     setShowModal(true);
+  //     return;
+  //   }
+  // }, []);
+
+  const checkIfLoggedIn = useCallback(() => {
+    if (Loggedin === false) {
+      alert("חייב להירשם על מנת לבחור");
+      setShowModal(true);
+    }
+  }, [!Loggedin]);
+  // const checkIfLoggedIn = () => {};
+
+  // useEffect(() => {
+  async function handleOnSubmit(event: any) {
+    try {
+      const formData = new FormData(event.target);
+      const firstName: any = formData.get("firstname");
+      const lastName: any = formData.get("lastname");
+      const tel: any = formData.get("tel");
+      console.log(firstName, lastName, tel);
+
+      // if (!firstName || !lastName || !tel) {
+      //   alert("אנא השלם את הפרטים");
+      //   return;
+      // }
+
+      const response = await AxiosClient.post(
+        "http://172.20.10.6:8080/user/singup",
+        {
+          firstName,
+          lastName,
+          tel,
+        }
+      );
+      if (response?.status !== 200) {
+        alert("req failed ");
+        // alert("הזן את הפרטים מחדש");
+        return;
+      }
+      alert("success");
+      debugger;
+      setLoggedin(!Loggedin);
+      debugger;
+      setShowModal(false);
+      debugger;
+    } catch (error) {
+      console.log(error);
+      alert("הזן את הפרטים מחחדש");
+    }
+  }
+  // }, []);
 
   //   ---------1
   const handleCountPlusVoteOne = () => {
@@ -159,109 +222,205 @@ function VotesPage() {
 
   return (
     <>
-      {showModal && (
-        <Modal
-          isOpen={showModal}
-          onRequestClose={handleClick}
-          style={style}
-          ariaHideApp={false}
-        >
-          <form action="">
-            <h3>הירשמו והצביעו</h3>
-            <label htmlFor="">שם פרטי</label>
-            <input type="text" />
-            <label htmlFor="">שם משפחה</label>
-            <input type="text" />
+      {Loggedin == false ? (
+        <div className="main-page-wraper">
+          <div className="main-page-container">
+            <NavVotes />
+            <div className="main-content-header">
+              <h2>מי יהיה המנצח של העונה?</h2>
+              <h3>
+                נותרו <b>{numberOfVotes}</b> הצבעות
+              </h3>
+            </div>
+            <div className="select-celebrity-options">
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={checkIfLoggedIn}>-</button>
+                  <input type="" placeholder={`${voteOne}`} readOnly />
+                  <button onClick={checkIfLoggedIn} disabled={disabled}>
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={checkIfLoggedIn}>-</button>
+                  <input type="" placeholder={`${voteTwo}`} readOnly />
+                  <button onClick={checkIfLoggedIn} disabled={disabled}>
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={checkIfLoggedIn}>-</button>
+                  <input type="" placeholder={`${voteThree}`} readOnly />
+                  <button onClick={checkIfLoggedIn} disabled={disabled}>
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={checkIfLoggedIn}>-</button>
+                  <input type="" placeholder={`${voteFour}`} readOnly />
+                  <button onClick={checkIfLoggedIn} disabled={disabled}>
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={checkIfLoggedIn}>-</button>
+                  <input type="" placeholder={`${voteFive}`} readOnly />
+                  <button onClick={checkIfLoggedIn} disabled={disabled}>
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="send-container">
+              <button className="button-54">שלח/י</button>
+            </div>
+          </div>{" "}
+          {showModal && (
+            <Modal
+              isOpen={showModal}
+              // onRequestClose={handleClick}
+              style={style}
+              ariaHideApp={false}
+            >
+              <form action="" onSubmit={(event) => handleOnSubmit(event)}>
+                <h3>הירשמו והצביעו</h3>
+                <label htmlFor="">שם פרטי</label>
+                <input type="text" name="firstname" />
+                <label htmlFor="">שם משפחה</label>
+                <input type="text" name="lastname" />
 
-            <label htmlFor="">מספר -פאלפון</label>
-            <input type="tel" size={20} maxLength={10} required />
-            <button>הירשמ/י</button>
-          </form>
-        </Modal>
-      )}
-      <div className="main-page-wraper">
-        <div className="main-page-container">
-          <NavVotes />
-          <div className="main-content-header">
-            <h2>מי יהיה המנצח של העונה?</h2>
-            <h3>
-              נותרו <b>{numberOfVotes}</b> הצבעות
-            </h3>
-          </div>
-          <div className="select-celebrity-options">
-            <div className="option">
-              <img
-                src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
-                alt=""
-              />
-              <div className="vote-container">
-                <button onClick={handleCountMinusVoteOne}>-</button>
-                <input type="" placeholder={`${voteOne}`} readOnly />
-                <button onClick={handleCountPlusVoteOne} disabled={disabled}>
-                  +
-                </button>
+                <label htmlFor="">מספר -פאלפון</label>
+                <input
+                  type="tel"
+                  size={20}
+                  //  maxLength={10}
+                  required
+                  name="tel"
+                />
+                <button>הירשמ/י</button>
+              </form>
+            </Modal>
+          )}
+        </div>
+      ) : (
+        <div className="main-page-wraper">
+          <div className="main-page-container">
+            <NavVotes />
+            <div className="main-content-header">
+              <h2>מי יהיה המנצח של העונה?</h2>
+              <h3>
+                נותרו <b>{numberOfVotes}</b> הצבעות
+              </h3>
+              <button onClick={() => setShowModal(true)}>
+                setShowModal(true);
+              </button>
+            </div>
+            <div className="select-celebrity-options">
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={handleCountMinusVoteOne}>-</button>
+                  <input type="" placeholder={`${voteOne}`} readOnly />
+                  <button onClick={handleCountPlusVoteOne} disabled={disabled}>
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={handleCountMinusVoteTwo}>-</button>
+                  <input type="" placeholder={`${voteTwo}`} readOnly />
+                  <button onClick={handleCountPlusVoteTwo} disabled={disabled}>
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={handleCountMinusVoteThree}>-</button>
+                  <input type="" placeholder={`${voteThree}`} readOnly />
+                  <button
+                    onClick={handleCountPlusVoteThree}
+                    disabled={disabled}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={handleCountMinusVoteFour}>-</button>
+                  <input type="" placeholder={`${voteFour}`} readOnly />
+                  <button onClick={handleCountPlusVoteFour} disabled={disabled}>
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="option">
+                <img
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  alt=""
+                />
+                <div className="vote-container">
+                  <button onClick={handleCountMinusVoteFive}>-</button>
+                  <input type="" placeholder={`${voteFive}`} readOnly />
+                  <button onClick={handleCountPlusVoteFive} disabled={disabled}>
+                    +
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="option">
-              <img
-                src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
-                alt=""
-              />
-              <div className="vote-container">
-                <button onClick={handleCountMinusVoteTwo}>-</button>
-                <input type="" placeholder={`${voteTwo}`} readOnly />
-                <button onClick={handleCountPlusVoteTwo} disabled={disabled}>
-                  +
-                </button>
-              </div>
+            <div className="send-container">
+              <button className="button-54">שלח/י</button>
             </div>
-            <div className="option">
-              <img
-                src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
-                alt=""
-              />
-              <div className="vote-container">
-                <button onClick={handleCountMinusVoteThree}>-</button>
-                <input type="" placeholder={`${voteThree}`} readOnly />
-                <button onClick={handleCountPlusVoteThree} disabled={disabled}>
-                  +
-                </button>
-              </div>
-            </div>
-            <div className="option">
-              <img
-                src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
-                alt=""
-              />
-              <div className="vote-container">
-                <button onClick={handleCountMinusVoteFour}>-</button>
-                <input type="" placeholder={`${voteFour}`} readOnly />
-                <button onClick={handleCountPlusVoteFour} disabled={disabled}>
-                  +
-                </button>
-              </div>
-            </div>
-            <div className="option">
-              <img
-                src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
-                alt=""
-              />
-              <div className="vote-container">
-                <button onClick={handleCountMinusVoteFive}>-</button>
-                <input type="" placeholder={`${voteFive}`} readOnly />
-                <button onClick={handleCountPlusVoteFive} disabled={disabled}>
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="send-container">
-            <button className="button-54">שלח/י</button>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
 
-export default VotesPage;
+export default memo(VotesPage);
