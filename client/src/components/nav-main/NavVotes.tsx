@@ -20,12 +20,13 @@ function NavVotes() {
         </div>
 
         <div className="right-container">
-          {/* <Link to={"/"}> */}
-          <img
-            src="https://media.reshet.tv/image/upload/f_auto,q_auto:best/v1684835752/assets/2023/Logo.png"
-            alt=""
-          />
-          {/* </Link> */}
+          <Link id="vote-nav-link" to={"/"}>
+            <img
+              id="vote-nav-img"
+              src="https://media.reshet.tv/image/upload/f_auto,q_auto:best/v1684835752/assets/2023/Logo.png"
+              alt=""
+            />
+          </Link>
           <span>
             <RxHamburgerMenu />
           </span>

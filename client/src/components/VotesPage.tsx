@@ -3,14 +3,18 @@ import NavVotes from "./nav-main/NavVotes";
 import modalStyle from "./modal/modalStyle";
 import Modal from "react-modal";
 import AxiosClient from "../axios/CreateAxios";
+import { useNavigate } from "react-router-dom";
 
 function VotesPage() {
   const [numberOfVotes, setNumberOfVotes] = useState(10);
   const [countPlus, setCountPlus] = useState(0);
 
-  const [Loggedin, setLoggedin] = useState(false);
+  const [Loggedin, setLoggedin] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [closeModal, setCloseModal] = useState(false);
   console.log(Loggedin);
+
+  const navigate = useNavigate();
 
   // const handleClick = useCallback(() => {
   //   setShowModal(!showModal);
@@ -26,9 +30,72 @@ function VotesPage() {
   const [voteFour, setVoteFour] = useState(0);
   const [voteFive, setVoteFive] = useState(0);
 
+  async function handleOnSubmit(event: any) {
+    try {
+      debugger;
+      const formData = new FormData(event.target);
+      const firstName: any = formData.get("firstname");
+      const lastName: any = formData.get("lastname");
+      const tel: any = formData.get("tel");
+      debugger;
+
+      if (!firstName || !lastName || !tel) {
+        alert("אנא השלם את הפרטים");
+        return;
+      }
+      debugger;
+      console.log("1");
+      debugger;
+      const response = await AxiosClient.post(
+        "http://172.20.10.6:8080/user/singup",
+        {
+          firstName,
+          lastName,
+          tel,
+        }
+      );
+      debugger;
+      if (response.status === 200) {
+        // Handle success
+        alert("success");
+        setLoggedin(true);
+        debugger;
+      } else {
+        // Handle failure
+        alert("req failed");
+        // You can also handle specific error cases here if needed
+      }
+    } catch (error) {
+      console.log(error);
+      alert("הזן את הפרטים מחחדש");
+    }
+  }
+  async function votesData() {
+    try {
+      if (numberOfVotes == 0) {
+        const response = await AxiosClient.post("/votesData", {
+          voteOne,
+          voteTwo,
+          voteThree,
+          voteFour,
+          voteFive,
+        });
+        if (response.status === 200) {
+          alert("נשלח בהצלחה");
+          navigate("/resehet-13/votes-page/order-compelete-message");
+        } else {
+          alert("error while connecting");
+          console.log("error while sending the data");
+        }
+      }
+    } catch (error) {
+      alert("error while connecting" + error);
+    }
+  }
+
   useEffect(() => {
     if (numberOfVotes < 1) {
-      //   alert(" הצבעה");
+      // alert(" הצבעה");
       setNumberOfVotes(0);
 
       setDisabled(true);
@@ -42,6 +109,9 @@ function VotesPage() {
     }
   }, [numberOfVotes]);
 
+  const CloseModalF = () => {
+    setCloseModal(!closeModal);
+  };
   //   if (Loggedin == false) {
   //     setShowModal(true);
   //   }
@@ -57,53 +127,18 @@ function VotesPage() {
   //   }
   // }, []);
 
-  const checkIfLoggedIn = useCallback(() => {
+  // const checkIfLoggedIn = useCallback(() => {
+  //   if (Loggedin === false) {
+  //     alert("חייב להירשם על מנת לבחור");
+  //     setShowModal(true);
+  //   }
+  // }, []);
+  const checkIfLoggedIn = () => {
     if (Loggedin === false) {
       alert("חייב להירשם על מנת לבחור");
       setShowModal(true);
     }
-  }, [!Loggedin]);
-  // const checkIfLoggedIn = () => {};
-
-  // useEffect(() => {
-  async function handleOnSubmit(event: any) {
-    try {
-      const formData = new FormData(event.target);
-      const firstName: any = formData.get("firstname");
-      const lastName: any = formData.get("lastname");
-      const tel: any = formData.get("tel");
-      console.log(firstName, lastName, tel);
-
-      // if (!firstName || !lastName || !tel) {
-      //   alert("אנא השלם את הפרטים");
-      //   return;
-      // }
-
-      const response = await AxiosClient.post(
-        "http://172.20.10.6:8080/user/singup",
-        {
-          firstName,
-          lastName,
-          tel,
-        }
-      );
-      if (response?.status !== 200) {
-        alert("req failed ");
-        // alert("הזן את הפרטים מחדש");
-        return;
-      }
-      alert("success");
-      debugger;
-      setLoggedin(!Loggedin);
-      debugger;
-      setShowModal(false);
-      debugger;
-    } catch (error) {
-      console.log(error);
-      alert("הזן את הפרטים מחחדש");
-    }
-  }
-  // }, []);
+  };
 
   //   ---------1
   const handleCountPlusVoteOne = () => {
@@ -222,7 +257,7 @@ function VotesPage() {
 
   return (
     <>
-      {Loggedin == false ? (
+      {Loggedin === false ? (
         <div className="main-page-wraper">
           <div className="main-page-container">
             <NavVotes />
@@ -248,7 +283,7 @@ function VotesPage() {
               </div>
               <div className="option">
                 <img
-                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685470819/uploads/2023/903543593.jpg"
                   alt=""
                 />
                 <div className="vote-container">
@@ -261,7 +296,7 @@ function VotesPage() {
               </div>
               <div className="option">
                 <img
-                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1689446264/uploads/2023/903617842.png"
                   alt=""
                 />
                 <div className="vote-container">
@@ -274,7 +309,7 @@ function VotesPage() {
               </div>
               <div className="option">
                 <img
-                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471796/uploads/2023/903543651.jpg"
                   alt=""
                 />
                 <div className="vote-container">
@@ -287,7 +322,7 @@ function VotesPage() {
               </div>
               <div className="option">
                 <img
-                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685478146/uploads/2023/903544005.jpg"
                   alt=""
                 />
                 <div className="vote-container">
@@ -306,7 +341,7 @@ function VotesPage() {
           {showModal && (
             <Modal
               isOpen={showModal}
-              // onRequestClose={handleClick}
+              // onRequestClose={CloseModalF}
               style={style}
               ariaHideApp={false}
             >
@@ -320,17 +355,20 @@ function VotesPage() {
                 <label htmlFor="">מספר -פאלפון</label>
                 <input
                   type="tel"
-                  size={20}
+                  // size={20}
                   //  maxLength={10}
                   required
                   name="tel"
                 />
                 <button>הירשמ/י</button>
+                <button onClick={() => setShowModal(!showModal)}>CLOSE</button>
               </form>
             </Modal>
           )}
         </div>
-      ) : (
+      ) : null}
+
+      {Loggedin === true ? (
         <div className="main-page-wraper">
           <div className="main-page-container">
             <NavVotes />
@@ -339,9 +377,6 @@ function VotesPage() {
               <h3>
                 נותרו <b>{numberOfVotes}</b> הצבעות
               </h3>
-              <button onClick={() => setShowModal(true)}>
-                setShowModal(true);
-              </button>
             </div>
             <div className="select-celebrity-options">
               <div className="option">
@@ -359,7 +394,7 @@ function VotesPage() {
               </div>
               <div className="option">
                 <img
-                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685470819/uploads/2023/903543593.jpg"
                   alt=""
                 />
                 <div className="vote-container">
@@ -372,7 +407,7 @@ function VotesPage() {
               </div>
               <div className="option">
                 <img
-                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1689446264/uploads/2023/903617842.png"
                   alt=""
                 />
                 <div className="vote-container">
@@ -388,7 +423,7 @@ function VotesPage() {
               </div>
               <div className="option">
                 <img
-                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471796/uploads/2023/903543651.jpg"
                   alt=""
                 />
                 <div className="vote-container">
@@ -401,7 +436,7 @@ function VotesPage() {
               </div>
               <div className="option">
                 <img
-                  src="https://media.reshet.tv/image/upload/t_main_large/v1685471253/uploads/2023/903543622.jpg"
+                  src="https://media.reshet.tv/image/upload/t_main_large/v1685478146/uploads/2023/903544005.jpg"
                   alt=""
                 />
                 <div className="vote-container">
@@ -414,11 +449,13 @@ function VotesPage() {
               </div>
             </div>
             <div className="send-container">
-              <button className="button-54">שלח/י</button>
+              <button className="button-54" onClick={() => votesData()}>
+                שלח/י
+              </button>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </>
   );
 }

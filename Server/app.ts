@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { Model } from "mongoose";
 import { userClient } from "./moudle/Interface";
+import { json } from "node:stream/consumers";
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -32,24 +33,32 @@ app.post("/user/singup", async (req, res) => {
       console.log("missing data");
       return;
     }
-    if (
-      await ClientsModel.findOne({
-        $or: [{ firstName }, { lastName }, { tel }],
-      })
-    )
+    if (await ClientsModel.findOne({ $or: [{ firstName }, { lastName }] }))
       return res.status(404).send({ error: "missing/invalid info" });
+    console.log("step one");
+
     const ClientDB = new ClientsModel({
       firstName,
       lastName,
       tel,
     });
+    console.log("step two");
+
     await ClientDB.save().then((data) => {
+      console.log("step three");
+      console.log("the data has been passed back");
       return res.status(200).json({ data });
     });
   } catch (error) {
     console.log("error", error);
     return res.status(500).send({ error: error });
   }
+});
+
+app.post("/votesData", (req, res) => {
+  const { voteOne, voteTwo, voteThree, voteFour, voteFive } = req.body;
+  // console.log(voteOne);
+  // const voteDb =
 });
 
 app.use("*", (req, res) => {

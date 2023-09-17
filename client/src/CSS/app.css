@@ -1,5 +1,14 @@
 /* Main css */
 @import "mainNav.css";
 @import "mainpage.css";
-@import "vote.css";
+
+/* Vote Page css */
+@import "voteNav.css";
 @import "modal.css";
+@import "vote.css";
+
+/* Vote Complete Message */
+@import "voteCompleteMessage.css";
+
+/* 404 Page scss */
+@import "erorpage.scss";
