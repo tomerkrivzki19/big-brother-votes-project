@@ -30,7 +30,7 @@ function VotesPage() {
     stav: 0,
     snir: 0,
     liel: 0,
-    yanki: 1,
+    yanki: 0,
     avi: 0,
   });
   const setVote = (name: string, isAdd: boolean) => {
@@ -41,6 +41,9 @@ function VotesPage() {
     } else if (numberOfVotes < 10 && tempVote[name] > 0) {
       tempVote[name]--;
       setNumberOfVotes(numberOfVotes + 1);
+    }
+    else{
+      return alert('Failed');
     }
     setVotee(tempVote);
   };
@@ -391,9 +394,9 @@ function VotesPage() {
                   alt=""
                 />
                 <div className="vote-container">
-                  <button onClick={handleCountMinusVoteOne}>-</button>
+                  <button onClick={()=>{setVote('matok',false)}}>-</button>
                   <input type="" placeholder={`${voteOne}`} readOnly />
-                  <button onClick={handleCountPlusVoteOne} disabled={disabled}>
+                  <button onClick={()=>{setVote('matok',true)}} disabled={disabled}>
                     +
                   </button>
                 </div>
@@ -404,9 +407,9 @@ function VotesPage() {
                   alt=""
                 />
                 <div className="vote-container">
-                  <button onClick={handleCountMinusVoteTwo}>-</button>
+                  <button onClick={()=>{setVote('yanki',false)}}>-</button>
                   <input type="" placeholder={`${voteTwo}`} readOnly />
-                  <button onClick={handleCountPlusVoteTwo} disabled={disabled}>
+                  <button onClick={()=>{setVote('yanki',true)}} disabled={disabled}>
                     +
                   </button>
                 </div>
