@@ -118,6 +118,9 @@ function VotesPage() {
     }
   }
 
+  useEffect(()=>{
+    console.log(votee);
+  },[votee])
   useEffect(() => {
     if (numberOfVotes < 1) {
       // alert(" הצבעה");
