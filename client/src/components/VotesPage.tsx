@@ -9,7 +9,7 @@ function VotesPage() {
   const [numberOfVotes, setNumberOfVotes] = useState(10);
   const [countPlus, setCountPlus] = useState(0);
 
-  const [Loggedin, setLoggedin] = useState(true);
+  const [Loggedin, setLoggedin] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [closeModal, setCloseModal] = useState(false);
   console.log(Loggedin);
@@ -23,6 +23,31 @@ function VotesPage() {
   const style: any = modalStyle;
   const [disabled, setDisabled] = useState(false);
 
+  // bdika :
+
+  const [votee, setVotee]: any = useState({
+    matok: 0,
+    stav: 0,
+    snir: 0,
+    liel: 0,
+    yanki: 1,
+    avi: 0,
+  });
+  const setVote = (name: string, isAdd: boolean) => {
+    const tempVote: any = { ...votee };
+    if (isAdd && numberOfVotes > 0) {
+      tempVote[name]++;
+      setNumberOfVotes(numberOfVotes - 1);
+    } else if (numberOfVotes < 10 && tempVote[name] > 0) {
+      tempVote[name]--;
+      setNumberOfVotes(numberOfVotes + 1);
+    }
+    setVotee(tempVote);
+  };
+  // <button onClick={() => setVote("avi", false)}>- </button>;
+  // <input> {votee.matok}</input>;
+  // <button onClick={() => setVote("avi", true)}>+ </button>;
+
   //   contenders
   const [voteOne, setVoteOne] = useState(0);
   const [voteTwo, setVoteTwo] = useState(0);
@@ -32,22 +57,19 @@ function VotesPage() {
 
   async function handleOnSubmit(event: any) {
     try {
-      debugger;
+      event.preventDefault();
       const formData = new FormData(event.target);
       const firstName: any = formData.get("firstname");
       const lastName: any = formData.get("lastname");
       const tel: any = formData.get("tel");
-      debugger;
 
       if (!firstName || !lastName || !tel) {
         alert("אנא השלם את הפרטים");
         return;
       }
-      debugger;
-      console.log("1");
-      debugger;
+
       const response = await AxiosClient.post(
-        "http://172.20.10.6:8080/user/singup",
+        "http://localhost:8080/user/singup",
         {
           firstName,
           lastName,
@@ -116,23 +138,7 @@ function VotesPage() {
   //     setShowModal(true);
   //   }
   // }
-  // useEffect(() => {
-  //   if (Loggedin === false) {
-  //     alert("חייב להירשם על מנת לבחור");
-  //     handleClick();
-  //     return;
-  //   } else {
-  //     setShowModal(true);
-  //     return;
-  //   }
-  // }, []);
 
-  // const checkIfLoggedIn = useCallback(() => {
-  //   if (Loggedin === false) {
-  //     alert("חייב להירשם על מנת לבחור");
-  //     setShowModal(true);
-  //   }
-  // }, []);
   const checkIfLoggedIn = () => {
     if (Loggedin === false) {
       alert("חייב להירשם על מנת לבחור");
