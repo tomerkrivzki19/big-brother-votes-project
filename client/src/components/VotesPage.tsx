@@ -30,7 +30,7 @@ function VotesPage() {
     stav: 0,
     snir: 0,
     liel: 0,
-    yanki: 1,
+    yanki: 0,
     avi: 0,
   });
   const setVote = (name: string, isAdd: boolean) => {
@@ -38,17 +38,15 @@ function VotesPage() {
     if (isAdd && numberOfVotes > 0) {
       tempVote[name]++;
       setNumberOfVotes(numberOfVotes - 1);
-    } else if (numberOfVotes < 10 && tempVote[name] > 0) {
+    } else if (numberOfVotes < 10 && tempVote[name] > 0 && isAdd == false) {
       tempVote[name]--;
       setNumberOfVotes(numberOfVotes + 1);
+    } else {
+      return alert("נגמרו ההצבעות");
     }
     setVotee(tempVote);
   };
-  // <button onClick={() => setVote("avi", false)}>- </button>;
-  // <input> {votee.matok}</input>;
-  // <button onClick={() => setVote("avi", true)}>+ </button>;
 
-  //   contenders
   const [voteOne, setVoteOne] = useState(0);
   const [voteTwo, setVoteTwo] = useState(0);
   const [voteThree, setVoteThree] = useState(0);
@@ -79,7 +77,7 @@ function VotesPage() {
       debugger;
       if (response.status === 200) {
         // Handle success
-        alert("success");
+        // alert("success");
         setLoggedin(true);
         debugger;
       } else {
@@ -89,7 +87,7 @@ function VotesPage() {
       }
     } catch (error) {
       console.log(error);
-      alert("הזן את הפרטים מחחדש");
+      alert("המשתמש קיים במערכת");
     }
   }
   async function votesData() {
@@ -114,22 +112,6 @@ function VotesPage() {
       alert("error while connecting" + error);
     }
   }
-
-  useEffect(() => {
-    if (numberOfVotes < 1) {
-      // alert(" הצבעה");
-      setNumberOfVotes(0);
-
-      setDisabled(true);
-      //   setVoteOne(voteOne);
-      //   setVoteTwo(voteTwo);
-      //   setVoteThree(voteThree);
-      //   setVoteFour(voteFour);
-      //   setVoteFive(voteFive);
-    } else {
-      setDisabled(false);
-    }
-  }, [numberOfVotes]);
 
   const CloseModalF = () => {
     setCloseModal(!closeModal);
@@ -391,9 +373,20 @@ function VotesPage() {
                   alt=""
                 />
                 <div className="vote-container">
-                  <button onClick={handleCountMinusVoteOne}>-</button>
-                  <input type="" placeholder={`${voteOne}`} readOnly />
-                  <button onClick={handleCountPlusVoteOne} disabled={disabled}>
+                  <button
+                    onClick={() => {
+                      setVote("matok", false);
+                    }}
+                  >
+                    -
+                  </button>
+                  <input type="" placeholder={`${votee.matok}`} readOnly />
+                  <button
+                    onClick={() => {
+                      setVote("matok", true);
+                    }}
+                    disabled={disabled}
+                  >
                     +
                   </button>
                 </div>
@@ -404,9 +397,20 @@ function VotesPage() {
                   alt=""
                 />
                 <div className="vote-container">
-                  <button onClick={handleCountMinusVoteTwo}>-</button>
-                  <input type="" placeholder={`${voteTwo}`} readOnly />
-                  <button onClick={handleCountPlusVoteTwo} disabled={disabled}>
+                  <button
+                    onClick={() => {
+                      setVote("yanki", false);
+                    }}
+                  >
+                    -
+                  </button>
+                  <input type="" placeholder={`${votee.yanki}`} readOnly />
+                  <button
+                    onClick={() => {
+                      setVote("yanki", true);
+                    }}
+                    disabled={disabled}
+                  >
                     +
                   </button>
                 </div>
