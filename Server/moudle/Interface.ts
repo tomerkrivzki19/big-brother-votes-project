@@ -2,11 +2,8 @@ export interface userClient {
   firstName: string;
   lastName: string;
   tel: number;
+  userId: string;
 }
 export interface VotesClient {
-  voteOne: number;
-  voteTwo: number;
-  voteThree: number;
-  voteFour: number;
-  voteFive: number;
+  votee: string[];
 }

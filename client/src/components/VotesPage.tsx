@@ -7,24 +7,20 @@ import { useNavigate } from "react-router-dom";
 
 function VotesPage() {
   const [numberOfVotes, setNumberOfVotes] = useState(10);
-  const [countPlus, setCountPlus] = useState(0);
 
   const [Loggedin, setLoggedin] = useState(false);
+  const [singIn, setSingIn] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
+
   const [closeModal, setCloseModal] = useState(false);
-  console.log(Loggedin);
 
   const navigate = useNavigate();
-
-  // const handleClick = useCallback(() => {
-  //   setShowModal(!showModal);
-  // }, [showModal]);
 
   const style: any = modalStyle;
   const [disabled, setDisabled] = useState(false);
 
-  // bdika :
-
+  // the counting of the votes proccess:
   const [votee, setVotee]: any = useState({
     matok: 0,
     stav: 0,
@@ -47,12 +43,6 @@ function VotesPage() {
     setVotee(tempVote);
   };
 
-  const [voteOne, setVoteOne] = useState(0);
-  const [voteTwo, setVoteTwo] = useState(0);
-  const [voteThree, setVoteThree] = useState(0);
-  const [voteFour, setVoteFour] = useState(0);
-  const [voteFive, setVoteFive] = useState(0);
-
   async function handleOnSubmit(event: any) {
     try {
       event.preventDefault();
@@ -66,7 +56,7 @@ function VotesPage() {
         return;
       }
 
-      const response = await AxiosClient.post(
+      const response = await AxiosClient.put(
         "http://localhost:8080/user/singup",
         {
           firstName,
@@ -74,38 +64,67 @@ function VotesPage() {
           tel,
         }
       );
-      debugger;
-      if (response.status === 200) {
-        // Handle success
-        // alert("success");
+      if (response.status === 200 && response.data.token) {
+        window.sessionStorage.setItem("accessTocken", response.data.token);
+        alert("נרשם בהצלחה ");
         setLoggedin(true);
-        debugger;
       } else {
-        // Handle failure
         alert("req failed");
         // You can also handle specific error cases here if needed
       }
     } catch (error) {
       console.log(error);
-      alert("המשתמש קיים במערכת");
+      alert(error + "המשתמש קיים במערכת");
     }
   }
+  async function handleOnSubmitSingIn(event: any) {
+    try {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const firstName: any = formData.get("firstname");
+      const tel: any = formData.get("tel");
+
+      if (!firstName || !tel) {
+        alert("אנא השלם את הפרטים");
+        return;
+      }
+
+      const response = await AxiosClient.post(
+        "http://localhost:8080/user/signIn",
+        {
+          firstName,
+          tel,
+        }
+      );
+      if (response.status === 200) {
+        // Handle successs
+        alert("נכנס בהצלחה ");
+        setLoggedin(true);
+      } else {
+        alert("req failed");
+        // You can also handle specific error cases here if needed
+      }
+    } catch (error) {
+      console.log(error);
+      alert(" המשתמש לא קיים במערכת ,אנא הירשם או התחבר מחדש");
+    }
+  }
+
   async function votesData() {
     try {
-      if (numberOfVotes == 0) {
-        const response = await AxiosClient.post("/votesData", {
-          voteOne,
-          voteTwo,
-          voteThree,
-          voteFour,
-          voteFive,
-        });
+      if (numberOfVotes !== 0) {
+        alert("אנא השלם את ההצבעות");
+        return;
+      } else {
+        const response = await AxiosClient.post(
+          "http://localhost:8080/votesData",
+          {
+            votee,
+          }
+        );
+
         if (response.status === 200) {
-          alert("נשלח בהצלחה");
           navigate("/resehet-13/votes-page/order-compelete-message");
-        } else {
-          alert("error while connecting");
-          console.log("error while sending the data");
         }
       }
     } catch (error) {
@@ -113,133 +132,11 @@ function VotesPage() {
     }
   }
 
-  const CloseModalF = () => {
-    setCloseModal(!closeModal);
-  };
-  //   if (Loggedin == false) {
-  //     setShowModal(true);
-  //   }
-  // }
-
+  // checkIfLoggedIn Function:
   const checkIfLoggedIn = () => {
     if (Loggedin === false) {
       alert("חייב להירשם על מנת לבחור");
       setShowModal(true);
-    }
-  };
-
-  //   ---------1
-  const handleCountPlusVoteOne = () => {
-    if (voteOne <= 9) {
-      setVoteOne(voteOne + 1);
-      setNumberOfVotes(numberOfVotes - 1);
-    } else if (voteOne > 9) {
-      setVoteOne(10);
-
-      alert("עברת את כמות ההצבעות");
-    }
-  };
-
-  const handleCountMinusVoteOne = () => {
-    if (voteOne < 1) {
-      setVoteOne(0);
-    } else if (voteOne <= 10) {
-      setVoteOne(voteOne - 1);
-      setNumberOfVotes(numberOfVotes + 1);
-    } else if (numberOfVotes == 0) {
-      setNumberOfVotes(0);
-    }
-  };
-  //   ---------2
-  const handleCountPlusVoteTwo = () => {
-    if (voteTwo <= 9) {
-      setVoteTwo(voteTwo + 1);
-      setNumberOfVotes(numberOfVotes - 1);
-    } else if (voteTwo > 9) {
-      setVoteTwo(10);
-      setNumberOfVotes(0);
-
-      alert("עברת את כמות ההצבעות");
-    }
-  };
-
-  const handleCountMinusVoteTwo = () => {
-    if (voteTwo < 1) {
-      setVoteTwo(0);
-    } else if (voteTwo <= 10) {
-      setVoteTwo(voteTwo - 1);
-      setNumberOfVotes(numberOfVotes + 1);
-    } else if (numberOfVotes == 0) {
-      setNumberOfVotes(0);
-    }
-  };
-  //   ---------3
-  const handleCountPlusVoteThree = () => {
-    if (voteThree <= 9) {
-      setVoteThree(voteThree + 1);
-      setNumberOfVotes(numberOfVotes - 1);
-    } else if (voteThree > 9) {
-      setVoteThree(10);
-      setNumberOfVotes(0);
-
-      alert("עברת את כמות ההצבעות");
-    }
-  };
-
-  const handleCountMinusVoteThree = () => {
-    if (voteThree < 1) {
-      setVoteThree(0);
-    } else if (voteThree <= 10) {
-      setVoteThree(voteThree - 1);
-      setNumberOfVotes(numberOfVotes + 1);
-    } else if (numberOfVotes == 0) {
-      setNumberOfVotes(0);
-    }
-  };
-  //   ---------4
-  const handleCountPlusVoteFour = () => {
-    if (voteFour <= 9) {
-      setVoteFour(voteFour + 1);
-      setNumberOfVotes(numberOfVotes - 1);
-    } else if (voteFour > 9) {
-      setVoteFour(10);
-      setNumberOfVotes(0);
-
-      alert("עברת את כמות ההצבעות");
-    }
-  };
-
-  const handleCountMinusVoteFour = () => {
-    if (voteFour < 1) {
-      setVoteFour(0);
-    } else if (voteFour <= 10) {
-      setVoteFour(voteFour - 1);
-      setNumberOfVotes(numberOfVotes + 1);
-    } else if (numberOfVotes == 0) {
-      setNumberOfVotes(0);
-    }
-  };
-  //   ---------5
-  const handleCountPlusVoteFive = () => {
-    if (voteFive <= 9) {
-      setVoteFive(voteFive + 1);
-      setNumberOfVotes(numberOfVotes - 1);
-    } else if (voteFive > 9) {
-      setVoteFive(10);
-      setNumberOfVotes(0);
-
-      alert("עברת את כמות ההצבעות");
-    }
-  };
-
-  const handleCountMinusVoteFive = () => {
-    if (voteFive < 1) {
-      setVoteFive(0);
-    } else if (voteFive <= 10) {
-      setVoteFive(voteFive - 1);
-      setNumberOfVotes(numberOfVotes + 1);
-    } else if (numberOfVotes == 0) {
-      setNumberOfVotes(0);
     }
   };
 
@@ -263,7 +160,7 @@ function VotesPage() {
                 />
                 <div className="vote-container">
                   <button onClick={checkIfLoggedIn}>-</button>
-                  <input type="" placeholder={`${voteOne}`} readOnly />
+                  <input type="" placeholder={`${votee.matok}`} readOnly />
                   <button onClick={checkIfLoggedIn} disabled={disabled}>
                     +
                   </button>
@@ -276,7 +173,7 @@ function VotesPage() {
                 />
                 <div className="vote-container">
                   <button onClick={checkIfLoggedIn}>-</button>
-                  <input type="" placeholder={`${voteTwo}`} readOnly />
+                  <input type="" placeholder={`${votee.yanki}`} readOnly />
                   <button onClick={checkIfLoggedIn} disabled={disabled}>
                     +
                   </button>
@@ -289,7 +186,7 @@ function VotesPage() {
                 />
                 <div className="vote-container">
                   <button onClick={checkIfLoggedIn}>-</button>
-                  <input type="" placeholder={`${voteThree}`} readOnly />
+                  <input type="" placeholder={`${votee.liel}`} readOnly />
                   <button onClick={checkIfLoggedIn} disabled={disabled}>
                     +
                   </button>
@@ -302,7 +199,7 @@ function VotesPage() {
                 />
                 <div className="vote-container">
                   <button onClick={checkIfLoggedIn}>-</button>
-                  <input type="" placeholder={`${voteFour}`} readOnly />
+                  <input type="" placeholder={`${votee.snir}`} readOnly />
                   <button onClick={checkIfLoggedIn} disabled={disabled}>
                     +
                   </button>
@@ -315,7 +212,7 @@ function VotesPage() {
                 />
                 <div className="vote-container">
                   <button onClick={checkIfLoggedIn}>-</button>
-                  <input type="" placeholder={`${voteFive}`} readOnly />
+                  <input type="" placeholder={`${votee.stav}`} readOnly />
                   <button onClick={checkIfLoggedIn} disabled={disabled}>
                     +
                   </button>
@@ -326,33 +223,76 @@ function VotesPage() {
               <button className="button-54">שלח/י</button>
             </div>
           </div>{" "}
-          {showModal && (
-            <Modal
-              isOpen={showModal}
-              // onRequestClose={CloseModalF}
-              style={style}
-              ariaHideApp={false}
-            >
-              <form action="" onSubmit={(event) => handleOnSubmit(event)}>
-                <h3>הירשמו והצביעו</h3>
-                <label htmlFor="">שם פרטי</label>
-                <input type="text" name="firstname" />
-                <label htmlFor="">שם משפחה</label>
-                <input type="text" name="lastname" />
+          {showModal &&
+            (singIn == false ? (
+              <Modal
+                isOpen={showModal}
+                // onRequestClose={CloseModalF}
+                style={style}
+                ariaHideApp={false}
+              >
+                <form action="" onSubmit={(event) => handleOnSubmit(event)}>
+                  <h3>הירשמו והצביעו</h3>
+                  <label htmlFor="">שם פרטי</label>
+                  <input type="text" name="firstname" />
+                  <label htmlFor="">שם משפחה</label>
+                  <input type="text" name="lastname" />
 
-                <label htmlFor="">מספר -פאלפון</label>
-                <input
-                  type="tel"
-                  // size={20}
-                  //  maxLength={10}
-                  required
-                  name="tel"
-                />
-                <button>הירשמ/י</button>
-                <button onClick={() => setShowModal(!showModal)}>CLOSE</button>
-              </form>
-            </Modal>
-          )}
+                  <label htmlFor="">מספר -פאלפון</label>
+                  <input
+                    type="tel"
+                    // size={20}
+                    //  maxLength={10}
+                    required
+                    name="tel"
+                  />
+                  <button>הירשמ/י</button>
+                  <button id="close" onClick={() => setShowModal(!showModal)}>
+                    close
+                  </button>
+                  <span>
+                    כבר יש לך חשבון?{" "}
+                    <b onClick={() => setSingIn(!singIn)} className="hoverMe">
+                      כניסה
+                    </b>
+                  </span>
+                </form>
+              </Modal>
+            ) : (
+              <Modal
+                isOpen={showModal}
+                // onRequestClose={CloseModalF}
+                style={style}
+                ariaHideApp={false}
+              >
+                <form
+                  action=""
+                  onSubmit={(event) => handleOnSubmitSingIn(event)}
+                >
+                  <h3>כניסה</h3>
+                  <label htmlFor="">שם פרטי</label>
+                  <input type="text" name="firstname" />
+                  <label htmlFor="">מספר -פאלפון</label>
+                  <input
+                    type="tel"
+                    // size={20}
+                    //  maxLength={10}
+                    required
+                    name="tel"
+                  />
+                  <button>הירשמ/י</button>
+                  <button id="close" onClick={() => setShowModal(!showModal)}>
+                    close
+                  </button>
+                  <span className="hoverMeRegister">
+                    אין לך חשבון?{" "}
+                    <b onClick={() => setSingIn(!singIn)} className="hoverMe ">
+                      המשך להרשמה
+                    </b>
+                  </span>
+                </form>
+              </Modal>
+            ))}
         </div>
       ) : null}
 
@@ -421,10 +361,10 @@ function VotesPage() {
                   alt=""
                 />
                 <div className="vote-container">
-                  <button onClick={handleCountMinusVoteThree}>-</button>
-                  <input type="" placeholder={`${voteThree}`} readOnly />
+                  <button onClick={() => setVote("liel", false)}>-</button>
+                  <input type="" placeholder={`${votee.liel}`} readOnly />
                   <button
-                    onClick={handleCountPlusVoteThree}
+                    onClick={() => setVote("liel", true)}
                     disabled={disabled}
                   >
                     +
@@ -437,9 +377,12 @@ function VotesPage() {
                   alt=""
                 />
                 <div className="vote-container">
-                  <button onClick={handleCountMinusVoteFour}>-</button>
-                  <input type="" placeholder={`${voteFour}`} readOnly />
-                  <button onClick={handleCountPlusVoteFour} disabled={disabled}>
+                  <button onClick={() => setVote("snir", false)}>-</button>
+                  <input type="" placeholder={`${votee.snir}`} readOnly />
+                  <button
+                    onClick={() => setVote("snir", true)}
+                    disabled={disabled}
+                  >
                     +
                   </button>
                 </div>
@@ -450,9 +393,12 @@ function VotesPage() {
                   alt=""
                 />
                 <div className="vote-container">
-                  <button onClick={handleCountMinusVoteFive}>-</button>
-                  <input type="" placeholder={`${voteFive}`} readOnly />
-                  <button onClick={handleCountPlusVoteFive} disabled={disabled}>
+                  <button onClick={() => setVote("stav", false)}>-</button>
+                  <input type="" placeholder={`${votee.stav}`} readOnly />
+                  <button
+                    onClick={() => setVote("stav", true)}
+                    disabled={disabled}
+                  >
                     +
                   </button>
                 </div>
