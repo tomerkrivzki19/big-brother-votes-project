@@ -15,11 +15,9 @@ const voteModel: Model<VotesClient> = require("./moudle/votesModel");
 
 const app = express();
 const port = 8080;
-// 172.20.10.6
 
 app.use(cors());
 app.use(express.json());
-app.use(Verify);
 
 var access_token = process.env.ACCESS_TOKEN_SECRET;
 var mongo_uri = process.env.MONGO_URI;
@@ -29,34 +27,6 @@ mongoose
   .catch((err: { message: any }) => {
     console.log(`at mongoose connect: ${err.message}`);
   });
-
-app.post("/user/signIn", async (req, res) => {
-  try {
-    const { firstName, tel } = req.body;
-
-    if (!firstName || !tel) {
-      console.log("missing data");
-      res.status(404).json({
-        message: "missing info",
-      });
-      return;
-    }
-
-    const client = await ClientsModel.find({ $or: [{ firstName }, { tel }] });
-    if (!client) {
-      console.log("not exist in the system");
-      return res.status(404).send({ error: "missing/invalid info" });
-    } else {
-      res.status(200).json({
-        status: "success",
-        message: "authotiraize",
-      });
-    }
-  } catch (error) {
-    console.log("error", error);
-    return res.status(500).send({ error: error });
-  }
-});
 
 app.put("/user/singup", async (req, res) => {
   try {
@@ -74,7 +44,6 @@ app.put("/user/singup", async (req, res) => {
       return res.status(404).send({ error: "missing/invalid info" });
 
     const userId = v4();
-    console.log(userId);
 
     const ClientDB = new ClientsModel({
       firstName,
@@ -92,7 +61,44 @@ app.put("/user/singup", async (req, res) => {
   }
 });
 
-app.post("/votesData", async (req, res) => {
+app.post("/user/signIn", async (req, res) => {
+  try {
+    const { firstName, tel } = req.body;
+
+    if (!firstName || !tel) {
+      console.log("missing data");
+      res.status(404).json({
+        message: "missing info",
+      });
+      return;
+    }
+
+    const client = await ClientsModel.findOne({
+      //fixed me the problem to userId = client.userId,becouse typeScrip aleted me that its cannot find the current user
+      $or: [{ firstName }, { tel }],
+      //to solve this problem i can only authenticate by its phone number, and add to the register a more secure way to check if the phone number does not exist in the system
+    });
+
+    if (!client) {
+      console.log("not exist in the system");
+      res.status(404).send({
+        message: "Client not found",
+      });
+      return;
+    }
+    const userId = client.userId;
+    const token = jwt.sign(userId, access_token || "");
+
+    res.status(200).json({
+      token,
+    });
+  } catch (error) {
+    console.log("error", error);
+    return res.status(500).send({ error: error });
+  }
+});
+
+app.post("/votesData", Verify, async (req, res) => {
   try {
     const votee = req.body;
     const voteDB = new voteModel({
@@ -107,12 +113,29 @@ app.post("/votesData", async (req, res) => {
   }
 });
 
-app.get("/getVotes", (req, res) => {});
+app.get("/getVotes", async (req, res) => {
+  try {
+    const voteData = await voteModel.find();
+    if (!voteData) {
+      console.log("err while geting the data");
+      return res.send(404).json({
+        message: "request faild ",
+      });
+    }
+
+    return res.status(200).json(voteData);
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({
+      message: "request faild",
+    });
+  }
+});
 
 app.use("*", (req, res) => {
   res.status(404).json({
     message: "not-found",
-    status: "bacd request",
+    status: "bad request",
   });
 });
 

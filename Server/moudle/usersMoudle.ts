@@ -1,4 +1,4 @@
-import mongooseClient from "mongoose";
+import mongooseClient, { Document } from "mongoose";
 import { userClient } from "./Interface";
 
 const clientScehma = new mongooseClient.Schema<userClient>({

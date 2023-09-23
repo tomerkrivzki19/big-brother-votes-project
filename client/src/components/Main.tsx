@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import MainNav from "./nav-main/MainNav";
 import { Link } from "react-router-dom";
+import VoteChart from "./charts/VoteChart";
+import AxiosClient from "../axios/CreateAxios";
 
 function Main() {
+  const [votesData, setVoteData]: any = useState([]);
+
+  useEffect(() => {
+    const getAllVotes = async () => {
+      const response = await AxiosClient.get("http://localhost:8080/getVotes");
+      if (response?.status == 200) {
+        console.log("sucess while geting the data");
+        setVoteData(response);
+        console.log(votesData);
+      } else {
+        console.log("eror while geting data");
+        // throw new Error("err while geting data");
+        alert("cannot get data");
+      }
+    };
+    getAllVotes();
+  }, []);
   return (
     <>
       <div className="main-page-wraper">
@@ -33,6 +52,29 @@ function Main() {
                 alt=""
               />
             </div>
+          </div>
+          <div className="check-the-votes-status">
+            <h3>בדקו את אחוזי ההצבעה </h3>
+            <VoteChart
+              votesData={{
+                labels: ["matok", "stav", "snir", "liel", "yanki"],
+                datasets: [
+                  {
+                    backgroundColor: [
+                      "rgb(255, 99, 132)",
+                      "rgb(75, 192, 192)",
+                      "rgb(255, 205, 86)",
+                      "rgb(201, 203, 207)",
+                      "rgb(54, 162, 235)",
+                    ],
+                    label: "מספר הצבעות",
+                    data: [11, 16, 7, 3, 14],
+                    borderColor: "black",
+                    borderWidth: 2,
+                  },
+                ],
+              }}
+            />
           </div>
         </div>
       </div>

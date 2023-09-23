@@ -65,7 +65,7 @@ function VotesPage() {
         }
       );
       if (response.status === 200 && response.data.token) {
-        window.sessionStorage.setItem("accessTocken", response.data.token);
+        window.sessionStorage.setItem("accessToken", response.data.token);
         alert("נרשם בהצלחה ");
         setLoggedin(true);
       } else {
@@ -96,13 +96,12 @@ function VotesPage() {
           tel,
         }
       );
-      if (response.status === 200) {
-        // Handle successs
+      if (response.status === 200 && response.data.token) {
+        window.sessionStorage.setItem("accessToken", response.data.token);
         alert("נכנס בהצלחה ");
         setLoggedin(true);
       } else {
         alert("req failed");
-        // You can also handle specific error cases here if needed
       }
     } catch (error) {
       console.log(error);
@@ -280,7 +279,7 @@ function VotesPage() {
                     required
                     name="tel"
                   />
-                  <button>הירשמ/י</button>
+                  <button>היכנס/י</button>
                   <button id="close" onClick={() => setShowModal(!showModal)}>
                     close
                   </button>

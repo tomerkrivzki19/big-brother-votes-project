@@ -12,24 +12,26 @@ function MiddlewareAuth({ children }: { children: any }) {
         return config;
       },
       (err) => {
+        console.log(err);
         return err;
       }
     );
-    // const responseinter = AxiosClient.interceptors.response.use(
-    //   (res) => {
-    //     return res;
-    //   },
-    //   (err) => {
-    //     // if (err?.response?.status === 401) {
-    //     //   return navigate("/");
-    //     // }
-    //     console.log(err);
-    //   }
-    // );
+    const responseinter = AxiosClient.interceptors.response.use(
+      (res) => {
+        return res;
+      },
+      (err) => {
+        if (err?.response?.status === 401) {
+          alert("not-authenticated");
+          return navigate("/");
+        }
+        console.log(err);
+      }
+    );
 
     return () => {
       AxiosClient.interceptors.request.eject(requstinter);
-      // AxiosClient.interceptors.response.eject(responseinter);
+      AxiosClient.interceptors.response.eject(responseinter);
     };
   }, []);
 
