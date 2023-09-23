@@ -5,7 +5,7 @@ import { userClient, VotesClient } from "./moudle/Interface";
 import { uuid } from "uuidv4";
 import { v4 } from "uuid";
 import Verify from "./authenticator/authenticator";
-
+import accessVerify from "./authenticator/authenticatorforaccess";
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -18,7 +18,6 @@ const port = 8080;
 
 app.use(cors());
 app.use(express.json());
-
 var access_token = process.env.ACCESS_TOKEN_SECRET;
 var mongo_uri = process.env.MONGO_URI;
 mongoose
@@ -113,7 +112,7 @@ app.post("/votesData", Verify, async (req, res) => {
   }
 });
 
-app.get("/getVotes", async (req, res) => {
+app.get("/getVotes", accessVerify, async (req, res) => {
   try {
     const voteData = await voteModel.find();
     if (!voteData) {
@@ -122,7 +121,6 @@ app.get("/getVotes", async (req, res) => {
         message: "request faild ",
       });
     }
-
     return res.status(200).json(voteData);
   } catch (error) {
     console.log("error", error);

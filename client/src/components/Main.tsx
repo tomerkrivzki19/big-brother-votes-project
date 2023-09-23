@@ -3,6 +3,7 @@ import MainNav from "./nav-main/MainNav";
 import { Link } from "react-router-dom";
 import VoteChart from "./charts/VoteChart";
 import AxiosClient from "../axios/CreateAxios";
+import { BsArrow90DegDown } from "react-icons/bs";
 
 function Main() {
   const [votesData, setVoteData]: any = useState([]);
@@ -13,7 +14,7 @@ function Main() {
       if (response?.status == 200) {
         console.log("sucess while geting the data");
         setVoteData(response);
-        console.log(votesData);
+        console.log(votesData, "1");
       } else {
         console.log("eror while geting data");
         // throw new Error("err while geting data");
@@ -22,6 +23,10 @@ function Main() {
     };
     getAllVotes();
   }, []);
+
+  const votesArray = votesData.data;
+  console.log(votesArray);
+
   return (
     <>
       <div className="main-page-wraper">
@@ -37,6 +42,9 @@ function Main() {
             <div className="main-link-toVotes">
               {/* <h3>מי יהיה המנצח הגדול של העונה?</h3> */}
               <p>הצביעו עכשיו</p>
+              <span className="P1">
+                <BsArrow90DegDown />
+              </span>
             </div>
           </Link>
           <div className="contenders-images-container">
@@ -54,7 +62,7 @@ function Main() {
             </div>
           </div>
           <div className="check-the-votes-status">
-            <h3>בדקו את אחוזי ההצבעה </h3>
+            <h3>אחוזי ההצבעה עד כה: </h3>
             <VoteChart
               votesData={{
                 labels: ["matok", "stav", "snir", "liel", "yanki"],

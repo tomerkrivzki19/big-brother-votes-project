@@ -29,7 +29,10 @@ function VotesPage() {
     yanki: 0,
     avi: 0,
   });
+
   const setVote = (name: string, isAdd: boolean) => {
+    debugger;
+
     const tempVote: any = { ...votee };
     if (isAdd && numberOfVotes > 0) {
       tempVote[name]++;
@@ -37,6 +40,13 @@ function VotesPage() {
     } else if (numberOfVotes < 10 && tempVote[name] > 0 && isAdd == false) {
       tempVote[name]--;
       setNumberOfVotes(numberOfVotes + 1);
+    } else if (
+      numberOfVotes < 10 &&
+      tempVote[name] == 0 &&
+      isAdd == false &&
+      numberOfVotes > 0
+    ) {
+      return alert("הזן מחדש");
     } else {
       return alert("נגמרו ההצבעות");
     }
