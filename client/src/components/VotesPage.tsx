@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useCallback, useMemo, memo } from "react";
+import React, { useEffect, useState, memo, useContext } from "react";
 import NavVotes from "./nav-main/NavVotes";
 import modalStyle from "./modal/modalStyle";
 import Modal from "react-modal";
 import AxiosClient from "../axios/CreateAxios";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../middlewareAuth/UserConnected";
 
 function VotesPage() {
+  const { Loggedin, setLoggedin } = useContext(UserContext);
   const [numberOfVotes, setNumberOfVotes] = useState(10);
 
-  const [Loggedin, setLoggedin] = useState(false);
   const [singIn, setSingIn] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
@@ -30,9 +31,8 @@ function VotesPage() {
     avi: 0,
   });
 
+  // votes system counting
   const setVote = (name: string, isAdd: boolean) => {
-    debugger;
-
     const tempVote: any = { ...votee };
     if (isAdd && numberOfVotes > 0) {
       tempVote[name]++;
@@ -53,6 +53,7 @@ function VotesPage() {
     setVotee(tempVote);
   };
 
+  // store all in promise all
   async function handleOnSubmit(event: any) {
     try {
       event.preventDefault();
@@ -118,7 +119,6 @@ function VotesPage() {
       alert(" המשתמש לא קיים במערכת ,אנא הירשם או התחבר מחדש");
     }
   }
-
   async function votesData() {
     try {
       if (numberOfVotes !== 0) {
@@ -127,9 +127,7 @@ function VotesPage() {
       } else {
         const response = await AxiosClient.post(
           "http://localhost:8080/votesData",
-          {
-            votee,
-          }
+          votee
         );
 
         if (response.status === 200) {
@@ -143,9 +141,14 @@ function VotesPage() {
 
   // checkIfLoggedIn Function:
   const checkIfLoggedIn = () => {
-    if (Loggedin === false) {
-      alert("חייב להירשם על מנת לבחור");
-      setShowModal(true);
+    try {
+      if (Loggedin === false) {
+        alert("חייב להירשם על מנת לבחור");
+        setShowModal(true);
+      }
+    } catch (error) {
+      alert("cannot get data from the server " + error);
+      console.log("cannot get data from the server ");
     }
   };
 

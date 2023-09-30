@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import MainNav from "./nav-main/MainNav";
 import { Link } from "react-router-dom";
 import VoteChart from "./charts/VoteChart";
@@ -13,8 +13,8 @@ function Main() {
       const response = await AxiosClient.get("http://localhost:8080/getVotes");
       if (response?.status == 200) {
         console.log("sucess while geting the data");
-        setVoteData(response);
-        console.log(votesData, "1");
+        const { data } = response;
+        setVoteData(data);
       } else {
         console.log("eror while geting data");
         // throw new Error("err while geting data");
@@ -24,8 +24,30 @@ function Main() {
     getAllVotes();
   }, []);
 
-  const votesArray = votesData.data;
-  console.log(votesArray);
+  // Recursive function to combine numbers by name
+  function combineNumbers(obj: any, combinedNumbers: any) {
+    for (const key in obj) {
+      if (typeof obj[key] === "number") {
+        if (!combinedNumbers[key]) {
+          combinedNumbers[key] = 0;
+        }
+        combinedNumbers[key] += obj[key];
+      } else if (typeof obj[key] === "object") {
+        combineNumbers(obj[key], combinedNumbers);
+      }
+    }
+  }
+
+  // Initialize an object to store combined numbers by name
+  const combinedNumbersByName = {};
+
+  // Combine numbers by name
+  votesData.forEach((obj: any) => {
+    combineNumbers(obj, combinedNumbersByName);
+  });
+
+  // Extract combined numbers as an array
+  const combinedNumbers = Object.values(combinedNumbersByName);
 
   return (
     <>
@@ -65,7 +87,13 @@ function Main() {
             <h3>אחוזי ההצבעה עד כה: </h3>
             <VoteChart
               votesData={{
-                labels: ["matok", "stav", "snir", "liel", "yanki"],
+                labels: [
+                  "יובל מעתוק",
+                  "סתיו קצין",
+                  "שניר בורגיל",
+                  "ליאל קוצרי",
+                  "יענקי גולדהבר",
+                ],
                 datasets: [
                   {
                     backgroundColor: [
@@ -76,7 +104,7 @@ function Main() {
                       "rgb(54, 162, 235)",
                     ],
                     label: "מספר הצבעות",
-                    data: [11, 16, 7, 3, 14],
+                    data: combinedNumbers.slice(0, 5),
                     borderColor: "black",
                     borderWidth: 2,
                   },
@@ -90,4 +118,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default memo(Main);

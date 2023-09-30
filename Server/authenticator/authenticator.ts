@@ -15,6 +15,9 @@ const Verify = async (req: Request, res: Response, next: NextFunction) => {
     );
   } else {
     console.log("not paseed the middale-ware beacuse of the jwt verify ");
+    // res.status(401).json({
+    //   message: "not paseed the middale-ware beacuse of the jwt verify",
+    // });
     return;
     // res.sendStatus(401);
   }
