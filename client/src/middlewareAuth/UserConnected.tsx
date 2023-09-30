@@ -1,11 +1,16 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  createContext,
+  useLayoutEffect,
+} from "react";
 import AxiosClient from "../axios/CreateAxios";
 
 const UserContext = createContext<any>(null);
 function UserConnected({ children }: { children: any }) {
   const [Loggedin, setLoggedin] = useState<boolean>(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     async function connection() {
       const response = await AxiosClient.get("http://localhost:8080/token");
       if (response.status !== 200) {

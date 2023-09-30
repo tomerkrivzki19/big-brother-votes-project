@@ -9,13 +9,11 @@ import { UserContext } from "../middlewareAuth/UserConnected";
 function VotesPage() {
   const { Loggedin, setLoggedin } = useContext(UserContext);
   const [numberOfVotes, setNumberOfVotes] = useState(10);
+  // window.localStorage.setItem("numberOfVotes", "10");
 
   const [singIn, setSingIn] = useState(false);
-
   const [showModal, setShowModal] = useState(false);
-
   const [closeModal, setCloseModal] = useState(false);
-
   const navigate = useNavigate();
 
   const style: any = modalStyle;
@@ -154,6 +152,7 @@ function VotesPage() {
 
   return (
     <>
+      {/* need to add mybe spiners */}
       {Loggedin === false ? (
         <div className="main-page-wraper">
           <div className="main-page-container">

@@ -120,20 +120,21 @@ app.get("/token", async (req, res) => {
         accessToken,
         process.env.ACCESS_TOKEN_SECRET || "",
         async (err: any, paylod: any) => {
-          if (!err)
-            res.status(200).json({
+          if (!err) {
+            return res.status(200).json({
               message: "success",
             });
-          else
-            return res.sendStatus(400).json({
-              message: "access denign",
+          } else {
+            return res.status(404).json({
+              message: "access denied",
             });
+          }
         }
       );
     }
   } catch (error) {
     console.log("error", error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "request faild",
     });
   }
@@ -150,7 +151,7 @@ app.get("/getVotes", async (req, res) => {
     return res.status(200).json(voteData);
   } catch (error) {
     console.log("error", error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "request faild",
     });
   }

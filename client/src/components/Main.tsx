@@ -1,28 +1,47 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, memo, useContext } from "react";
 import MainNav from "./nav-main/MainNav";
 import { Link } from "react-router-dom";
 import VoteChart from "./charts/VoteChart";
 import AxiosClient from "../axios/CreateAxios";
 import { BsArrow90DegDown } from "react-icons/bs";
+import { UserContext } from "../middlewareAuth/UserConnected";
 
 function Main() {
   const [votesData, setVoteData]: any = useState([]);
+  const { Loggedin, setLoggedin } = useContext(UserContext);
+  console.log(Loggedin);
 
   useEffect(() => {
     const getAllVotes = async () => {
-      const response = await AxiosClient.get("http://localhost:8080/getVotes");
-      if (response?.status == 200) {
-        console.log("sucess while geting the data");
-        const { data } = response;
-        setVoteData(data);
-      } else {
-        console.log("eror while geting data");
-        // throw new Error("err while geting data");
-        alert("cannot get data");
+      try {
+        debugger;
+        if (Loggedin == true) {
+          const response = await AxiosClient.get(
+            "http://localhost:8080/getVotes"
+          );
+          if (response?.status == 200) {
+            debugger;
+            console.log("sucess while geting the data");
+            const { data } = response;
+            setVoteData(data);
+            return;
+          } else {
+            console.log("eror while geting data");
+            alert("cannot get data");
+            return;
+          }
+        } else {
+          debugger;
+          console.log("no data");
+          return;
+        }
+      } catch (error) {
+        alert("err" + error);
       }
     };
+
     getAllVotes();
-  }, []);
+  }, [Loggedin]);
 
   // Recursive function to combine numbers by name
   function combineNumbers(obj: any, combinedNumbers: any) {
@@ -83,35 +102,41 @@ function Main() {
               />
             </div>
           </div>
-          <div className="check-the-votes-status">
-            <h3>אחוזי ההצבעה עד כה: </h3>
-            <VoteChart
-              votesData={{
-                labels: [
-                  "יובל מעתוק",
-                  "סתיו קצין",
-                  "שניר בורגיל",
-                  "ליאל קוצרי",
-                  "יענקי גולדהבר",
-                ],
-                datasets: [
-                  {
-                    backgroundColor: [
-                      "rgb(255, 99, 132)",
-                      "rgb(75, 192, 192)",
-                      "rgb(255, 205, 86)",
-                      "rgb(201, 203, 207)",
-                      "rgb(54, 162, 235)",
-                    ],
-                    label: "מספר הצבעות",
-                    data: combinedNumbers.slice(0, 5),
-                    borderColor: "black",
-                    borderWidth: 2,
-                  },
-                ],
-              }}
-            />
-          </div>
+          {Loggedin == false ? (
+            <div>
+              <h3>הירשמו והצביעו על מנת לעקוב אחרי כמות ההצבעות </h3>
+            </div>
+          ) : (
+            <div className="check-the-votes-status">
+              <h3>אחוזי ההצבעה עד כה: </h3>
+              <VoteChart
+                votesData={{
+                  labels: [
+                    "יובל מעתוק",
+                    "סתיו קצין",
+                    "שניר בורגיל",
+                    "ליאל קוצרי",
+                    "יענקי גולדהבר",
+                  ],
+                  datasets: [
+                    {
+                      backgroundColor: [
+                        "rgb(255, 99, 132)",
+                        "rgb(75, 192, 192)",
+                        "rgb(255, 205, 86)",
+                        "rgb(201, 203, 207)",
+                        "rgb(54, 162, 235)",
+                      ],
+                      label: "מספר הצבעות",
+                      data: combinedNumbers.slice(0, 5),
+                      borderColor: "black",
+                      borderWidth: 2,
+                    },
+                  ],
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>
