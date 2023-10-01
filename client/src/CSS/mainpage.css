@@ -53,18 +53,9 @@ a {
   max-width: 100%;
   margin: 1em 0em;
 }
-.main-page-wraper
-  .main-page-container
-  .contenders-images-container
-  .contender-container {
-  width: 45%;
-}
-.main-page-wraper
-  .main-page-container
-  .contenders-images-container
-  .contender-container
-  img {
-  width: 100%;
+
+.main-page-wraper .main-page-container .contenders-images-container img {
+  width: 110%;
   height: 95%;
 }
 
@@ -78,6 +69,16 @@ a {
   padding-bottom: 0.3em;
   border-bottom: 1px solid violet;
   color: blue;
+}
+/* message if not connected  */
+.votes-status-false {
+  /* background-color: aqua; */
+  text-align: center;
+  padding: 2.5em 0;
+}
+.votes-status-false h3 {
+  text-decoration: underline;
+  font-weight: 700;
 }
 
 /* all media query for all types of devices */
