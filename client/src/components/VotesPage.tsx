@@ -5,15 +5,20 @@ import Modal from "react-modal";
 import AxiosClient from "../axios/CreateAxios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../middlewareAuth/UserConnected";
+import Countdown from "./Countdown/Countdown";
 
 function VotesPage() {
   const { Loggedin, setLoggedin } = useContext(UserContext);
   const [numberOfVotes, setNumberOfVotes] = useState(10);
-  // window.localStorage.setItem("numberOfVotes", "10");
 
   const [singIn, setSingIn] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  const [countdown, setCountdown] = useState(false);
+  const [showTimer, setShowTimer] = useState(false);
+
   const [closeModal, setCloseModal] = useState(false);
+
   const navigate = useNavigate();
 
   const style: any = modalStyle;
@@ -29,6 +34,39 @@ function VotesPage() {
     avi: 0,
   });
 
+  const totalMinutes = 15; // 15 minutes
+  const totalMilliseconds = totalMinutes * 60 * 1000; // Convert to milliseconds
+
+  useEffect(() => {
+    const NUMBER_OF_VOTES = window.localStorage.getItem("numberOfVotes");
+    if (NUMBER_OF_VOTES === "0") {
+      debugger;
+      alert("ניצלת את כמות ההצבעות  😶");
+      setNumberOfVotes(0);
+      const votesTimer = () => {
+        console.log("timer started");
+        const timer = setInterval(() => {
+          setNumberOfVotes(10);
+          localStorage.setItem("numberOfVotes", "10");
+          setShowTimer(false);
+          console.log("timer-of");
+
+          console.log("timer finished and now need to clear iT self");
+
+          clearInterval(timer);
+          return;
+        }, totalMilliseconds);
+      };
+      votesTimer();
+      setShowTimer(true);
+
+      return;
+    } else {
+      setShowTimer(false);
+      return;
+    }
+  }, []);
+
   // votes system counting
   const setVote = (name: string, isAdd: boolean) => {
     const tempVote: any = { ...votee };
@@ -39,18 +77,21 @@ function VotesPage() {
       tempVote[name]--;
       setNumberOfVotes(numberOfVotes + 1);
     } else if (
-      numberOfVotes < 10 &&
-      tempVote[name] == 0 &&
-      isAdd == false &&
-      numberOfVotes > 0
+      (numberOfVotes < 10 &&
+        tempVote[name] == 0 &&
+        isAdd == false &&
+        numberOfVotes > 0) ||
+      (numberOfVotes >= 0 && numberOfVotes !== 0)
     ) {
       return alert("הזן מחדש");
     } else {
       return alert("נגמרו ההצבעות");
     }
+
     setVotee(tempVote);
   };
 
+  //TODO:
   // store all in promise all
   async function handleOnSubmit(event: any) {
     try {
@@ -119,8 +160,13 @@ function VotesPage() {
   }
   async function votesData() {
     try {
-      if (numberOfVotes !== 0) {
+      const NUMBER_OF_VOTES: string | null =
+        window.localStorage.getItem("numberOfVotes");
+      if (numberOfVotes !== 0 && Loggedin == true) {
         alert("אנא השלם את ההצבעות");
+        return;
+      } else if (NUMBER_OF_VOTES === "0") {
+        alert("ניצלת את כמות ההצבעות  😶");
         return;
       } else {
         const response = await AxiosClient.post(
@@ -130,10 +176,16 @@ function VotesPage() {
 
         if (response.status === 200) {
           navigate("/resehet-13/votes-page/order-compelete-message");
+          localStorage.setItem("numberOfVotes", JSON.stringify(numberOfVotes));
+          return;
+        } else {
+          console.log("error while getting data from the server ");
+          return;
         }
       }
     } catch (error) {
       alert("error while connecting" + error);
+      return;
     }
   }
 
@@ -306,7 +358,6 @@ function VotesPage() {
             ))}
         </div>
       ) : null}
-
       {Loggedin === true ? (
         <div className="main-page-wraper">
           <div className="main-page-container">
@@ -316,6 +367,17 @@ function VotesPage() {
               <h3>
                 נותרו <b>{numberOfVotes}</b> הצבעות
               </h3>
+              {showTimer === false ? null : (
+                <div className="countdown-container-wraper">
+                  <div className="countdown-container">
+                    <span> מספר הזמן שנותר להצבעה חדשה :</span>
+                    <h5>
+                      {" "}
+                      <Countdown />{" "}
+                    </h5>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="select-celebrity-options">
               <div className="option">

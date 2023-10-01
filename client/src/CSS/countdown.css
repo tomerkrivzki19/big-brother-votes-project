@@ -1,0 +1,28 @@
+.countdown-container-wraper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* margin: 0em 15em; */
+  /* text-align: center; */
+  /* background-color: red; */
+}
+.countdown-container-wraper .countdown-container {
+  align-items: center;
+  /* padding: 0 1.5em;
+  border: 1px solid teal;
+  background-color: lightcyan; */
+}
+.countdown-container-wraper .countdown-container span {
+  padding: 0 1.5em;
+  border: 1px solid teal;
+  background-color: lightcyan;
+  font-weight: bold;
+}
+
+.countdown-container-wraper .countdown-container h5 {
+  position: absolute;
+  background-color: wheat;
+  font-size: 55px;
+  margin-right: 0.55em;
+}

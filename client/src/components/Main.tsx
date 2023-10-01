@@ -14,13 +14,11 @@ function Main() {
   useEffect(() => {
     const getAllVotes = async () => {
       try {
-        debugger;
         if (Loggedin == true) {
           const response = await AxiosClient.get(
             "http://localhost:8080/getVotes"
           );
           if (response?.status == 200) {
-            debugger;
             console.log("sucess while geting the data");
             const { data } = response;
             setVoteData(data);
@@ -31,7 +29,6 @@ function Main() {
             return;
           }
         } else {
-          debugger;
           console.log("no data");
           return;
         }

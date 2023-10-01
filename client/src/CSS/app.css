@@ -6,6 +6,7 @@
 @import "voteNav.css";
 @import "modal.css";
 @import "vote.css";
+@import "countdown.css";
 
 /* Vote Complete Message */
 @import "voteCompleteMessage.css";
