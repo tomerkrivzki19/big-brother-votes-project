@@ -15,7 +15,7 @@ function Main() {
   useEffect(() => {
     const getAllVotes = async () => {
       try {
-        if (Loggedin == true) {
+        if (Loggedin === true) {
           const response = await AxiosClient.get(
             "http://localhost:8080/getVotes"
           );
@@ -78,12 +78,14 @@ function Main() {
             />
           </div>
           <Link to={"/resehet-13/votes-page"}>
+            <div className="link-votes-header-container">
+              <p className="P1">
+                <BsArrow90DegDown />
+              </p>
+              <h1>הצביעו עכשיו</h1>
+            </div>
             <div className="main-link-toVotes">
               {/* <h3>מי יהיה המנצח הגדול של העונה?</h3> */}
-              <p>הצביעו עכשיו</p>
-              <span className="P1">
-                <BsArrow90DegDown />
-              </span>
             </div>
           </Link>
           <div className="contenders-images-container">

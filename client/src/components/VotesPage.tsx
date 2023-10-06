@@ -177,6 +177,10 @@ function VotesPage() {
         if (response.status === 200) {
           navigate("/resehet-13/votes-page/order-compelete-message");
           localStorage.setItem("numberOfVotes", JSON.stringify(numberOfVotes));
+          // const expirationTime: any = new Date().getTime() + totalMilliseconds;
+          // localStorage.setItem("timeout", expirationTime);
+          // const interval = setInterval(checkTimeout, 5000);
+
           return;
         } else {
           console.log("error while getting data from the server ");
@@ -373,7 +377,7 @@ function VotesPage() {
                     <span> מספר הזמן שנותר להצבעה חדשה :</span>
                     <h5>
                       {" "}
-                      <Countdown />{" "}
+                      <Countdown Loggedin={Loggedin} />{" "}
                     </h5>
                   </div>
                 </div>

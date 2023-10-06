@@ -1,30 +1,10 @@
-// import React, { useRef, useEffect, useState, useContext } from "react";
-// import { UserContext } from "../../middlewareAuth/UserConnected";
+import React, { useEffect, useState, memo, useCallback } from "react";
 
-// export default function Countdown() {
-//   const [num, setNum] = useState(100);
-//   const { Loggedin, setLoggedin } = useContext(UserContext);
-
-//   let intervalRef = useRef();
-
-//   const decreaseNum = () => setNum((prev) => prev - 1);
-
-//   useEffect(() => {
-//     intervalRef.current = setInterval(decreaseNum, 1000);
-
-//     return () => setLoggedin(true), clearInterval(intervalRef.current);
-//   }, []);
-
-//   return (
-//     <>
-//       <div>{num}</div>
-//     </>
-//   );
-// }
-import React, { useEffect, useState, memo } from "react";
-
-function Countdown() {
-  const [remainingTime, setRemainingTime] = useState(15 * 60); //15 min in seconds
+function Countdown({ Loggedin }) {
+  const initialRemainingTime = localStorage.getItem("remainingTime") || 15 * 60;
+  const [remainingTime, setRemainingTime] = useState(
+    Number(initialRemainingTime)
+  ); //15 min in seconds
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,6 +21,10 @@ function Countdown() {
       clearInterval(interval);
     };
   }, []);
+  // Store the remaining time in local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("remainingTime", remainingTime);
+  }, [remainingTime]);
 
   const hours = Math.floor(remainingTime / 3600);
   const minutes = Math.floor((remainingTime % 3600) / 60);
