@@ -22,7 +22,7 @@ function Main() {
           const response = await AxiosClient.get(
             "http://localhost:8080/getVotes"
           );
-          if (response?.status == 200) {
+          if (response.status == 200) {
             console.log("sucess while geting the data");
             const { data } = response;
             setVoteData(data);
