@@ -1,4 +1,10 @@
-import React, { useEffect, useState, memo, useContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  memo,
+  useContext,
+  useCallback,
+} from "react";
 import NavVotes from "./nav-main/NavVotes";
 import modalStyle from "./modal/modalStyle";
 import Modal from "react-modal";
@@ -8,14 +14,15 @@ import { UserContext } from "../middlewareAuth/UserConnected";
 import Countdown from "./Countdown/Countdown";
 
 function VotesPage() {
-  const { Loggedin, setLoggedin } = useContext(UserContext);
+  const { Loggedin, setLoggedin, setShowTimer, showTimer } =
+    useContext(UserContext);
   const [numberOfVotes, setNumberOfVotes] = useState(10);
 
   const [singIn, setSingIn] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const [countdown, setCountdown] = useState(false);
-  const [showTimer, setShowTimer] = useState(false);
+  // const [showTimer, setShowTimer] = useState(false);
 
   const [closeModal, setCloseModal] = useState(false);
 
@@ -34,38 +41,39 @@ function VotesPage() {
     avi: 0,
   });
 
-  const totalMinutes = 15; // 15 minutes
-  const totalMilliseconds = totalMinutes * 60 * 1000; // Convert to milliseconds
+  // const totalMinutes = 15; // 15 minutes
+  // const totalMilliseconds = totalMinutes * 60 * 1000; // Convert to milliseconds
+  // const votesTimer = () => {
+  //   console.log("timer started");
+  //   const timer = setInterval(() => {
+  //     setNumberOfVotes(10);
+  //     localStorage.setItem("numberOfVotes", "10");
+  //     setShowTimer(false);
+  //     console.log("timer-of");
+  //     console.log("timer finished and now need to clear iT self");
+  //     clearInterval(timer);
+  //     return;
+  //   }, totalMilliseconds);
+  // };
 
   useEffect(() => {
     const NUMBER_OF_VOTES = window.localStorage.getItem("numberOfVotes");
-    if (NUMBER_OF_VOTES === "0") {
-      debugger;
-      alert("ניצלת את כמות ההצבעות  😶");
-      setNumberOfVotes(0);
-      const votesTimer = () => {
-        console.log("timer started");
-        const timer = setInterval(() => {
-          setNumberOfVotes(10);
-          localStorage.setItem("numberOfVotes", "10");
-          setShowTimer(false);
-          console.log("timer-of");
-
-          console.log("timer finished and now need to clear iT self");
-
-          clearInterval(timer);
-          return;
-        }, totalMilliseconds);
-      };
-      votesTimer();
-      setShowTimer(true);
-
-      return;
+    if (Loggedin === true) {
+      if (NUMBER_OF_VOTES == "0") {
+        setNumberOfVotes(0);
+        setShowTimer(true);
+        // alert("ניצלת את כמות ההצבעות  😶");
+        return;
+      } else if (NUMBER_OF_VOTES !== "0") {
+        // setShowTimer(false);
+        // localStorage.setItem("numberOfVotes", "10");
+        // setNumberOfVotes(10);
+        return;
+      }
     } else {
-      setShowTimer(false);
       return;
     }
-  }, []);
+  }, [Loggedin]);
 
   // votes system counting
   const setVote = (name: string, isAdd: boolean) => {
@@ -91,8 +99,7 @@ function VotesPage() {
     setVotee(tempVote);
   };
 
-  //TODO:
-  // store all in promise all
+  //events handalers
   async function handleOnSubmit(event: any) {
     try {
       event.preventDefault();
@@ -208,7 +215,6 @@ function VotesPage() {
 
   return (
     <>
-      {/* need to add mybe spiners */}
       {Loggedin === false ? (
         <div className="main-page-wraper">
           <div className="main-page-container">
@@ -361,27 +367,42 @@ function VotesPage() {
               </Modal>
             ))}
         </div>
-      ) : null}
-      {Loggedin === true ? (
+      ) : (
         <div className="main-page-wraper">
           <div className="main-page-container">
             <NavVotes />
+            {showTimer === false ? null : (
+              <div className="countdown-container-wraper-main">
+                <div className="countdown-container-main">
+                  <span> מספר הזמן שנותר להצבעה חדשה :</span>
+                  <h5>
+                    <Countdown
+                      setNumberOfVotes={setNumberOfVotes}
+                      setShowTimer={setShowTimer}
+                    />
+                  </h5>
+                </div>
+              </div>
+            )}
             <div className="main-content-header">
               <h2>מי יהיה המנצח של העונה?</h2>
               <h3>
                 נותרו <b>{numberOfVotes}</b> הצבעות
               </h3>
-              {showTimer === false ? null : (
+              {/* {showTimer === false ? null : (
                 <div className="countdown-container-wraper">
                   <div className="countdown-container">
                     <span> מספר הזמן שנותר להצבעה חדשה :</span>
                     <h5>
                       {" "}
-                      <Countdown Loggedin={Loggedin} />{" "}
+                      <Countdown
+                        setNumberOfVotes={setNumberOfVotes}
+                        setShowTimer={setShowTimer}
+                      />{" "}
                     </h5>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
             <div className="select-celebrity-options">
               <div className="option">
@@ -488,7 +509,7 @@ function VotesPage() {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </>
   );
 }

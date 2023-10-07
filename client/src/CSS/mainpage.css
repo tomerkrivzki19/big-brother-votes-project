@@ -5,13 +5,26 @@
 .main-page-wraper .main-page-container .commercial-container img {
   width: 100%;
 }
-.main-page-wraper .main-page-container .link-votes-header-container {
+
+.main-page-wraper .main-page-container .main-link-toVotes {
+  width: 100%;
+  text-align: center;
+  direction: rtl;
+  border-radius: 1px solid black;
+}
+.main-page-wraper
+  .main-page-container
+  .main-link-toVotes
+  .link-votes-header-container {
   display: flex;
   justify-content: center;
-
   height: 70px;
 }
-.main-page-wraper .main-page-container .link-votes-header-container p {
+.main-page-wraper
+  .main-page-container
+  .main-link-toVotes
+  .link-votes-header-container
+  p {
   color: lightskyblue;
   font-weight: 900;
   font-size: 35px;
@@ -19,23 +32,19 @@
   text-decoration: underline;
   padding-right: 0.3em;
 }
-.main-page-wraper .main-page-container .link-votes-header-container h1 {
+.main-page-wraper
+  .main-page-container
+  .main-link-toVotes
+  .link-votes-header-container
+  h1 {
   color: lightskyblue;
+  text-shadow: #fc0 1px 0 10px;
   font-weight: 900;
   /* text-shadow: 5px 5px #558abb; */
 }
-.main-page-wraper .main-page-container .main-link-toVotes {
-  width: 100%;
-  margin: 0.5em 0em;
-  padding: 9em 0;
-  text-align: center;
-  direction: rtl;
-  background-image: url("https://media.reshet.tv/image/upload/t_image_article_800/v1694032211/uploads/2023/903702715.webp");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  backdrop-filter: blur(50px); /* Adjust the blur radius as needed */
-  background-color: grey;
+
+.main-page-wraper .main-page-container .main-link-toVotes img {
+  max-width: 100%;
 }
 
 a {

@@ -1,27 +1,22 @@
-.countdown-container-wraper {
+.countdown-container-wraper-main {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  /* margin: 0em 15em; */
-  /* text-align: center; */
-  /* background-color: red; */
+  position: absolute;
+  z-index: 90;
+  direction: rtl;
 }
-.countdown-container-wraper .countdown-container {
+.countdown-container-wraper-main .countdown-container-main {
   align-items: center;
-  /* padding: 0 1.5em;
-  border: 1px solid teal;
-  background-color: lightcyan; */
 }
-.countdown-container-wraper .countdown-container span {
-  padding: 0 1.5em;
+.countdown-container-wraper-main .countdown-container-main span {
   border: 1px solid teal;
   background-color: lightcyan;
   font-weight: bold;
 }
-
-.countdown-container-wraper .countdown-container h5 {
-  position: absolute;
+.countdown-container-wraper-main .countdown-container-main h5 {
+  /* position: absolute; */
+  margin-top: 0;
   background-color: wheat;
   font-size: 55px;
   margin-right: 0.55em;

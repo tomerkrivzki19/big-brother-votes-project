@@ -6,15 +6,18 @@ import AxiosClient from "../axios/CreateAxios";
 import { BsArrow90DegDown } from "react-icons/bs";
 import { UserContext } from "../middlewareAuth/UserConnected";
 import ImagesCarousel from "./carousel/ImagesCarousel";
+import Countdown from "./Countdown/Countdown";
 
 function Main() {
   const [votesData, setVoteData]: any = useState([]);
-  const { Loggedin, setLoggedin } = useContext(UserContext);
+  const { Loggedin, setLoggedin, setShowTimer, showTimer } =
+    useContext(UserContext);
   console.log(Loggedin);
 
   useEffect(() => {
     const getAllVotes = async () => {
       try {
+        debugger;
         if (Loggedin === true) {
           const response = await AxiosClient.get(
             "http://localhost:8080/getVotes"
@@ -39,7 +42,7 @@ function Main() {
     };
 
     getAllVotes();
-  }, [Loggedin]);
+  }, []);
 
   // Recursive function to combine numbers by name
   function combineNumbers(obj: any, combinedNumbers: any) {
@@ -54,15 +57,12 @@ function Main() {
       }
     }
   }
-
   // Initialize an object to store combined numbers by name
   const combinedNumbersByName = {};
-
   // Combine numbers by name
   votesData.forEach((obj: any) => {
     combineNumbers(obj, combinedNumbersByName);
   });
-
   // Extract combined numbers as an array
   const combinedNumbers = Object.values(combinedNumbersByName);
 
@@ -71,6 +71,19 @@ function Main() {
       <div className="main-page-wraper">
         <div className="main-page-container">
           <MainNav />
+          {showTimer === false ? null : (
+            <div className="countdown-container-wraper-main">
+              <div className="countdown-container-main">
+                <span> מספר הזמן שנותר להצבעה חדשה :</span>
+                <h5>
+                  <Countdown
+                    setNumberOfVotes={undefined}
+                    setShowTimer={setShowTimer}
+                  />
+                </h5>
+              </div>
+            </div>
+          )}
           <div className="commercial-container">
             <img
               src="https://media.reshet.tv/image/upload/t_main_large/v1641909105/uploads/2022/902809449.jpg"
@@ -78,14 +91,17 @@ function Main() {
             />
           </div>
           <Link to={"/resehet-13/votes-page"}>
-            <div className="link-votes-header-container">
-              <p className="P1">
-                <BsArrow90DegDown />
-              </p>
-              <h1>הצביעו עכשיו</h1>
-            </div>
             <div className="main-link-toVotes">
-              {/* <h3>מי יהיה המנצח הגדול של העונה?</h3> */}
+              <div className="link-votes-header-container">
+                <h1>הצביעו עכשיו</h1>
+                <p className="P1">
+                  <BsArrow90DegDown />
+                </p>
+              </div>
+              <img
+                src="https://media.reshet.tv/image/upload/t_image_article_800/v1694032211/uploads/2023/903702715.webp"
+                alt=""
+              />
             </div>
           </Link>
           <div className="contenders-images-container">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import Main from "./components/Main";
 import VotesPage from "./components/VotesPage";
@@ -29,4 +29,4 @@ function App() {
   );
 }
 
-export default App;
+export default memo(App);

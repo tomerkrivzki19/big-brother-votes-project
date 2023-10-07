@@ -1,6 +1,6 @@
 import React, { useEffect, useState, memo, useCallback } from "react";
 
-function Countdown({ Loggedin }) {
+function Countdown({ setNumberOfVotes, setShowTimer }) {
   const initialRemainingTime = localStorage.getItem("remainingTime") || 15 * 60;
   const [remainingTime, setRemainingTime] = useState(
     Number(initialRemainingTime)
@@ -10,7 +10,11 @@ function Countdown({ Loggedin }) {
     const interval = setInterval(() => {
       setRemainingTime((prevTime) => {
         if (prevTime <= 0) {
+          localStorage.setItem("remainingTime", 15 * 60);
+          localStorage.setItem("numberOfVotes", "10");
           clearInterval(interval);
+          setNumberOfVotes(10);
+          setShowTimer(false);
           return 0;
         }
         return prevTime - 1;
@@ -21,6 +25,7 @@ function Countdown({ Loggedin }) {
       clearInterval(interval);
     };
   }, []);
+
   // Store the remaining time in local storage whenever it changes
   useEffect(() => {
     localStorage.setItem("remainingTime", remainingTime);
