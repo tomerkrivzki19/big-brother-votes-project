@@ -7,22 +7,23 @@ import { BsArrow90DegDown } from "react-icons/bs";
 import { UserContext } from "../middlewareAuth/UserConnected";
 import ImagesCarousel from "./carousel/ImagesCarousel";
 import Countdown from "./Countdown/Countdown";
+import Timer from "./Countdown/Timer";
 
 function Main() {
   const [votesData, setVoteData]: any = useState([]);
   const { Loggedin, setLoggedin, setShowTimer, showTimer } =
     useContext(UserContext);
   console.log(Loggedin);
+  console.log(showTimer);
 
   useEffect(() => {
     const getAllVotes = async () => {
       try {
-        debugger;
         if (Loggedin === true) {
           const response = await AxiosClient.get(
             "http://localhost:8080/getVotes"
           );
-          if (response.status == 200) {
+          if (response && response.status && response.status === 200) {
             console.log("sucess while geting the data");
             const { data } = response;
             setVoteData(data);
@@ -38,11 +39,12 @@ function Main() {
         }
       } catch (error) {
         alert("err" + error);
+        return;
       }
     };
 
     getAllVotes();
-  }, []);
+  }, [Loggedin]);
 
   // Recursive function to combine numbers by name
   function combineNumbers(obj: any, combinedNumbers: any) {
@@ -71,7 +73,7 @@ function Main() {
       <div className="main-page-wraper">
         <div className="main-page-container">
           <MainNav />
-          {showTimer === false ? null : (
+          {/* {showTimer === false ? null : (
             <div className="countdown-container-wraper-main">
               <div className="countdown-container-main">
                 <span> מספר הזמן שנותר להצבעה חדשה :</span>
@@ -83,7 +85,7 @@ function Main() {
                 </h5>
               </div>
             </div>
-          )}
+          )} */}
           <div className="commercial-container">
             <img
               src="https://media.reshet.tv/image/upload/t_main_large/v1641909105/uploads/2022/902809449.jpg"
@@ -144,6 +146,7 @@ function Main() {
           )}
         </div>
       </div>
+      <Timer />
     </>
   );
 }

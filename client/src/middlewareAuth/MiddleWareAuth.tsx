@@ -24,6 +24,9 @@ function MiddlewareAuth({ children }: { children: any }) {
         if (err?.response?.status === 401) {
           alert("not-authenticated");
           return navigate("/");
+        } else if (err?.response?.status === 404) {
+          console.log("user not found");
+          return;
         }
         console.log(err);
       }

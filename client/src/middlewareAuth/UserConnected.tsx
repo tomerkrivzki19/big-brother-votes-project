@@ -14,8 +14,8 @@ function UserConnected({ children }: { children: any }) {
   useLayoutEffect(() => {
     async function connection() {
       const response = await AxiosClient.get("http://localhost:8080/token");
-      if (response.status !== 200) {
-        alert("user not connected");
+      if (response?.status !== 200) {
+        console.log("user not connected");
         setLoggedin(false);
       } else {
         alert("user connected");

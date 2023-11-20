@@ -12,11 +12,13 @@ import AxiosClient from "../axios/CreateAxios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../middlewareAuth/UserConnected";
 import Countdown from "./Countdown/Countdown";
+import Timer from "./Countdown/Timer";
 
 function VotesPage() {
   const { Loggedin, setLoggedin, setShowTimer, showTimer } =
     useContext(UserContext);
   const [numberOfVotes, setNumberOfVotes] = useState(10);
+  console.log(showTimer);
 
   const [singIn, setSingIn] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -58,21 +60,20 @@ function VotesPage() {
 
   useEffect(() => {
     const NUMBER_OF_VOTES = window.localStorage.getItem("numberOfVotes");
-    if (Loggedin === true) {
-      if (NUMBER_OF_VOTES == "0") {
-        setNumberOfVotes(0);
-        setShowTimer(true);
-        // alert("ניצלת את כמות ההצבעות  😶");
-        return;
-      } else if (NUMBER_OF_VOTES !== "0") {
-        // setShowTimer(false);
-        // localStorage.setItem("numberOfVotes", "10");
-        // setNumberOfVotes(10);
-        return;
-      }
-    } else {
+    // if (Loggedin === true) {
+    if (NUMBER_OF_VOTES == "0") {
+      setNumberOfVotes(0);
+      setShowTimer(true);
+      // alert("ניצלת את כמות ההצבעות  😶");
+      return;
+    } else if (NUMBER_OF_VOTES !== "0") {
+      // setShowTimer(false);
+      // localStorage.setItem("numberOfVotes", "10");
+      // setNumberOfVotes(10);
       return;
     }
+    // }
+    return;
   }, [Loggedin]);
 
   // votes system counting
@@ -215,6 +216,7 @@ function VotesPage() {
 
   return (
     <>
+      <Timer />
       {Loggedin === false ? (
         <div className="main-page-wraper">
           <div className="main-page-container">
